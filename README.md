@@ -37,12 +37,12 @@ nodemon app.js
 
 # Estrutura do projeto
 
-├── app.js # Código principal da aplicação
-├── user.db # Banco de dados SQLite
-├── /views # Templates EJS para renderização das páginas
-│ ├── /pages # Páginas principais (index, login, cadastro, etc)
-│ └── /partials # Componentes parciais (ex: tabela de usuários)
-├── /static # Arquivos estáticos (CSS, imagens, JS)
+├── app.js # Código principal da aplicação  
+├── user.db # Banco de dados SQLite  
+├── /views # Templates EJS para renderização das páginas  
+│ ├── /pages # Páginas principais (index, login, cadastro, etc)  
+│ └── /partials # Componentes parciais (ex: tabela de usuários)  
+├── /static # Arquivos estáticos (CSS, imagens, JS)  
 
 ---
 
