@@ -23,7 +23,7 @@ const db = new sqlite3.Database("user.db"); // Instância para uso do Sqlite3, e
 db.serialize(() => {
   // Este método permite enviar comandos SQL em modo 'sequencial'
   db.run(
-    `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT, password TEXT, email TEXT, celular TEXT, cpf TEXT, rg TEXT)`
   );
 });
@@ -59,7 +59,7 @@ const login = 'Vc está na página "Login"<br><a href="/">Voltar</a>';
 const cadastro = 'Vc está na página "Cadastro"<br><a href="/">Voltar</a>';
 
 
-/* Método express.get necessita de dois parâmetros 
+/* Método express.get necessita de dois parâmetros
  Na ARROW FUNCTION, o primeiro são os dados do servidor (REQUISITION - 'req')
  o segundo, são os dados que serão enviados ao cliente (RESULT - 'res') */
 
@@ -194,7 +194,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  console.log("GET /dashboard", req.status);
+  console.log("GET /dashboard");
   console.log(JSON.stringify(config));
 
   if (req.session.loggedin) {
