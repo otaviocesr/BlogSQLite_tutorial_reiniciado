@@ -115,15 +115,12 @@ app.post("/cadastro", (req, res) => {
   console.log("Corpo da requisição:", JSON.stringify(req.body, null, 2))
 
   const { username, password, email, celular, cpf, rg } = req.body;
-  // Colocar aqui as validações e inclusão no banco de dados do cadastro do usuário
-  // 1. Validar dados do usuário
-  // 2. saber se ele já existe no banco
 
   if (!username || !password || !email) {
     return res.status(400).json({
       success: false,
       message: "Nome do usuário, senha e email são obrigatórios"
-    })
+    });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -169,10 +166,16 @@ app.post("/cadastro", (req, res) => {
               message: "Erro interno do servidor ao cadastrar usuário"
             });
           }
+          console.log(`Usuário ${username} cadastrado com ID: ${this.lastID}`);
+          return res.status(201).json({
+            success: true,
+            message: "Usuário cadastrado com sucesso!",
+            userID: this.lastID,
+          });
         }
-      )
+      );
     }
-  })
+  });
 });
 
 // Pregramação de rotas do método GET do HTTP 'app.get()'

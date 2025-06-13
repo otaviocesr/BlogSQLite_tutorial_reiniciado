@@ -27,26 +27,26 @@ const checkNome = () => {
 /* ---------------------------------------------------------------------- */
 
 /* ------------------ FUNÇÃO PARA VERIFICAR O EMAIL --------------------- */
-const checkEmail = (email) => {
-  const partesEmail = email.split("@");
-
-  if (
-    (partesEmail.length === 2 &&
-      partesEmail[1].toLowerCase() === "gmail.com") ||
-    (partesEmail.length === 2 &&
-      partesEmail[1].toLowerCase() === "outlook.com") ||
-    (partesEmail.length === 2 && partesEmail[1].toLowerCase() === "hotmail.com")
-  ) {
-    return true;
-  } else {
+const checkEmail = (emailValue) => {
+  const emailTrimmed = emailValue.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(emailTrimmed)) {
     return false;
   }
+
+  const partesEmail = emailTrimmed.split("@");
+  if (partesEmail.length === 2) {
+    const domain = partesEmail[1].toLowerCase();
+    const allowedDomains = ["gmail.com", "outlook.com", "hotmail.com", "icloud.com", "yahoo.com"]; // Adicione mais se precisar
+    return true
+  }
+  return false
 };
 /* --------------------------------------------------------------------- */
 
 /* ------------ FUNÇÃO PARA VERIFICAR IGUALDADE DAS SENHAS ------------- */
 function checkPasswordMatch() {
-  return senha.value === confirmarSenha.value ? true : false;
+  return senha.value === confirmarSenha.value;
 }
 /* --------------------------------------------------------------------- */
 
@@ -79,6 +79,8 @@ function maskPhoneNumber(event) {
 
   event.target.value = celular;
 }
+/* --------------------------------------------------------------------- */
+celular.addEventListener('input', maskPhoneNumber);
 /* --------------------------------------------------------------------- */
 
 /* --------------- FUNÇÃO PARA VERIFICAR FORÇA DA SENHA ---------------- */
@@ -194,10 +196,10 @@ async function fetchDatas(event) { // Tornar a função async para usar await
 
     if (response.ok) { // Verifica se a resposta do servidor foi bem-sucedida (status 2xx)
       const result = await response.json(); // Tenta parsear a resposta do servidor como JSON
-      console.log('Sucesso', result);
+      console.log('Sucesso:', result);
       formulario.reset(); // Limpa o formulário após o sucesso
-      // createDisplayMsgError('Cadastro realizado com sucesso!' + (result.message || ''));
-      alert('Cadastro realizado com sucesso!' + (result.message || ''));
+      // createDisplayMsgError('Cadastro realizado com sucesso! ' + (result.message || ''));
+      alert('Cadastro realizado com sucesso! ' + (result.message || ''));
       window.location.href = "/login";
       // Redirecionar ou mostrar mensagem de sucesso mais elaborada
     } else {
@@ -209,17 +211,16 @@ async function fetchDatas(event) { // Tornar a função async para usar await
   } catch (error) {
     // Erro de rede ou algo impediu a requisição de ser completada
     console.error('Erro na requisição:', error);
-    createDisplayMsgError('Erro de conexão. Por favor, tente novamente.')
+    createDisplayMsgError('Erro de conexão. Por favor, tente novamente.');
   }
-  /* -------------------FIM DA LÓGICA DE ENVIO-------------------------- */
+  // --- FIM DA LÓGICA DE ENVIO ---
 }
-
 /* --------------------------------------------------------------------- */
 
 formulario.addEventListener("submit", fetchDatas);
 
 nome.addEventListener("input", () => {
-  if (nome.value && !checkNome()) {
+  if (nome.value.trim() && !checkNome()) {
     createDisplayMsgError(
       "O nome não pode conter números ou caracteres especiais!"
     );
@@ -229,7 +230,7 @@ nome.addEventListener("input", () => {
 });
 
 email.addEventListener("input", () => {
-  if (email.value && !checkEmail(email.value)) {
+  if (email.value.trim() && !checkEmail(email.value)) {
     createDisplayMsgError("O e-mail digitado não é valido!");
   } else {
     createDisplayMsgError("");
@@ -237,29 +238,18 @@ email.addEventListener("input", () => {
 });
 
 senha.addEventListener("input", () => {
-  if (senha.value && checkPasswordStrength(senha.value)) {
-    createDisplayMsgError(checkPasswordStrength(senha.value));
+  const error = checkPasswordStrength(senha.value);
+  if (senha.value && error) {
+    createDisplayMsgError(error);
   } else {
     createDisplayMsgError("");
   }
 });
 
-function checkPasswordStrength(senha) {
-  if (!/[a-z]/.test(senha)) {
-    return "A senha deve ter pelo menos uma letra minúscula!";
+confirmarSenha.addEventListener("input", () => {
+  if (senha.value && confirmarSenha.value && !checkPasswordMatch()) {
+    createDisplayMsgError("As senhas não coincidem!");
+  } else {
+    createDisplayMsgError("")
   }
-  if (!/[A-Z]/.test(senha)) {
-    return "A senha deve ter pelo menos uma letra maiúscula!";
-  }
-  if (!/[\W_]/.test(senha)) {
-    return "A senha deve ter pelo menos um caractere especial!";
-  }
-  if (!/\d/.test(senha)) {
-    return "A senha deve ter pelo menos um número!";
-  }
-  if (senha.length < 8) {
-    return "A senha deve ter pelo menos 8 caracteres!";
-  }
-
-  return null;
-}
+});
